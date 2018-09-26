@@ -16,6 +16,7 @@ Bugs:
 * Fix 7bit/base64 content transfer encoding mismatch. (ahorek)
 * Fix UTF-8 attachment filename quoting. (ahorek)
 * Fix `delete_all` using a readonly IMAP connection. (kimromi)
+* Fix concatenation order of splitted attachment filename (kanety)
 
 
 == Version 2.7.0 (2017-10-31)

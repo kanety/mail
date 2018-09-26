@@ -29,7 +29,7 @@ module Mail
       if pairs.empty? # Just dealing with a single value pair
         super(exact || key_name)
       else # Dealing with a multiple value pair or a single encoded value pair
-        string = pairs.sort { |a,b| a.first.to_s <=> b.first.to_s }.map { |v| v.last }.join('')
+        string = pairs.sort_by { |a| a.first.to_s =~ /^([^*]+)\*(\d+)/ ? [$1, $2.to_i] : [a.first.to_s, 0] }.map { |v| v.last }.join('')
         if mt = string.match(/([\w\-]+)?'(\w\w)?'(.*)/)
           string = mt[3]
           encoding = mt[1]
@@ -41,7 +41,7 @@ module Mail
     end
 
     def encoded
-      map.sort_by { |a| a.first.to_s }.map! do |key_name, value|
+      map.sort_by { |a| a.first.to_s =~ /^([^*]+)\*(\d+)/ ? [$1, $2.to_i] : [a.first.to_s, 0] }.map! do |key_name, value|
         unless value.ascii_only?
           value = Mail::Encodings.param_encode(value)
           key_name = "#{key_name}*"
@@ -51,7 +51,7 @@ module Mail
     end
 
     def decoded
-      map.sort_by { |a| a.first.to_s }.map! do |key_name, value|
+      map.sort_by { |a| a.first.to_s =~ /^([^*]+)\*(\d+)/ ? [$1, $2.to_i] : [a.first.to_s, 0] }.map! do |key_name, value|
         %Q{#{key_name}=#{quote_token(value)}}
       end.join("; ")
     end

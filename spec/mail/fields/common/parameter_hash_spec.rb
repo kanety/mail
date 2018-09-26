@@ -90,4 +90,22 @@ describe Mail::ParameterHash do
     expect(hash.encoded).to eq %Q{value*0*=us-ascii'en'This%20is%20even%20more%20;\r\n\svalue*1*=%2A%2A%2Afun%2A%2A%2A%20;\r\n\svalue*2="isn't it"}
   end
 
+  it "should sort by count number" do
+    hash = Mail::ParameterHash.new
+    hash.merge!({'value*0*' => "us-ascii'en'%61",
+                 'value*1*' => "%62",
+                 'value*2*' => "%63",
+                 'value*3*' => "%64",
+                 'value*4*' => "%65",
+                 'value*5*' => "%66",
+                 'value*6*' => "%67",
+                 'value*7*' => "%68",
+                 'value*8*' => "%69",
+                 'value*9*' => "%6A",
+                 'value*10*' => "%2E",
+                 'value*11*' => "%74",
+                 'value*12*' => "%78",
+                 'value*13' => "%74",})
+    expect(hash['value']).to eq 'abcdefghij.txt'
+  end
 end
